@@ -12,6 +12,10 @@ export default function TruckEntry() {
     listWasteTypes().then(setWasteTypes);
   }, []);
 
+  // Helper to recalculate total_weight for an entry
+  const recalcTotalWeight = (waste_distribution) =>
+    waste_distribution.reduce((sum, w) => sum + (parseFloat(w.weight) || 0), 0);
+
   const handleEntryChange = (idx, field, value) => {
     const copy = [...entries];
     copy[idx][field] = value;
@@ -23,6 +27,8 @@ export default function TruckEntry() {
     const wasteArr = copy[entryIdx].waste_distribution || [];
     wasteArr[wasteIdx] = { ...wasteArr[wasteIdx], [field]: value };
     copy[entryIdx].waste_distribution = wasteArr;
+    // Auto-calculate total_weight
+    copy[entryIdx].total_weight = recalcTotalWeight(wasteArr);
     setEntries(copy);
   };
 
@@ -32,6 +38,8 @@ export default function TruckEntry() {
       ...(copy[entryIdx].waste_distribution || []),
       { type: '', weight: '' }
     ];
+    // Auto-calculate total_weight
+    copy[entryIdx].total_weight = recalcTotalWeight(copy[entryIdx].waste_distribution);
     setEntries(copy);
   };
 
@@ -67,7 +75,7 @@ export default function TruckEntry() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Add Truck Entries</h2>
+      <h2 style={{ marginBottom: 24 }}>Add Truck Entries</h2>
       {entries.map((entry, idx) => (
         <div key={idx} style={{
           border: '1px solid #bcd',
@@ -102,38 +110,53 @@ export default function TruckEntry() {
             required
             style={{ marginBottom: 8, width: '100%' }}
           />
+          <div style={{ marginBottom: 8 }}>
+            <button
+              type="button"
+              onClick={() => addWasteRow(idx)}
+              style={{
+                marginBottom: 8,
+                background: '#1a237e',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 6,
+                padding: '10px 18px',
+                fontSize: 15,
+                cursor: 'pointer'
+              }}
+            >
+              Add Waste Type
+            </button>
+            {(entry.waste_distribution || []).map((w, i) => (
+              <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+                <select
+                  value={w.type}
+                  onChange={e => handleWasteChange(idx, i, 'type', e.target.value)}
+                  required
+                  style={{ flex: 1 }}
+                >
+                  <option value="">Select Waste Type</option>
+                  {wasteTypes.map(wt => <option key={wt.id} value={wt.name}>{wt.name}</option>)}
+                </select>
+                <input
+                  type="number"
+                  placeholder="Weight"
+                  value={w.weight}
+                  onChange={e => handleWasteChange(idx, i, 'weight', e.target.value)}
+                  required
+                  style={{ flex: 1 }}
+                  min="0"
+                />
+              </div>
+            ))}
+          </div>
           <input
             placeholder="Total Weight"
             type="number"
             value={entry.total_weight}
-            onChange={e => handleEntryChange(idx, 'total_weight', e.target.value)}
-            required
-            style={{ marginBottom: 8, width: '100%' }}
+            readOnly
+            style={{ marginBottom: 8, width: '100%', background: '#f0f0f0', color: '#333' }}
           />
-          <button type="button" onClick={() => addWasteRow(idx)} style={{ marginBottom: 8 }}>
-            Add Waste Type
-          </button>
-          {(entry.waste_distribution || []).map((w, i) => (
-            <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-              <select
-                value={w.type}
-                onChange={e => handleWasteChange(idx, i, 'type', e.target.value)}
-                required
-                style={{ flex: 1 }}
-              >
-                <option value="">Select Waste Type</option>
-                {wasteTypes.map(wt => <option key={wt.id} value={wt.name}>{wt.name}</option>)}
-              </select>
-              <input
-                type="number"
-                placeholder="Weight"
-                value={w.weight}
-                onChange={e => handleWasteChange(idx, i, 'weight', e.target.value)}
-                required
-                style={{ flex: 1 }}
-              />
-            </div>
-          ))}
         </div>
       ))}
       <button type="button" onClick={addTruckEntryRow} style={{
@@ -156,7 +179,8 @@ export default function TruckEntry() {
         padding: '14px 0',
         fontSize: 18,
         fontWeight: 600,
-        width: 200
+        width: 200,
+        marginTop: 8
       }}>
         Submit All
       </button>

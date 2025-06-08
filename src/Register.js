@@ -3,7 +3,7 @@ import { register } from './api';
 import { useNavigate } from 'react-router-dom';
 
 export default function Register({ auth }) {
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', phone: '' });
   const [msg, setMsg] = useState('');
   const navigate = useNavigate();
 
@@ -14,7 +14,7 @@ export default function Register({ auth }) {
     const res = await register(form);
     if (res.message && !res.error) {
       // Auto-login after registration
-      auth.login({ name: form.name, email: form.email });
+      auth.login({ name: form.name, email: form.email, phone: form.phone });
       setMsg('Registration successful');
       navigate('/');
     } else {
@@ -27,6 +27,7 @@ export default function Register({ auth }) {
       <h2>Register</h2>
       <input name="name" placeholder="Name" onChange={handleChange} required />
       <input name="email" placeholder="Email" onChange={handleChange} required />
+      <input name="phone" placeholder="Phone Number" onChange={handleChange} required />
       <input name="password" type="password" placeholder="Password" onChange={handleChange} required />
       <button type="submit">Register</button>
       <div>{msg}</div>

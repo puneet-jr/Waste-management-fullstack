@@ -37,6 +37,7 @@ export default function Profile() {
           <div>ID: {profile.id}</div>
           <div>Name: {profile.name}</div>
           <div>Email: {profile.email}</div>
+          <div>Phone: {profile.phone}</div>
         </div>
       )}
     </div>

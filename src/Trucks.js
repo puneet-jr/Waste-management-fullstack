@@ -1,49 +1,131 @@
 import React, { useEffect, useState } from 'react';
 import { listTrucks, getTruckHistory } from './api';
 import { useNavigate } from 'react-router-dom';
+import * as XLSX from 'xlsx';
 
 export default function Trucks() {
   const [truckEntries, setTruckEntries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filterDate, setFilterDate] = useState('');
+  const [downloading, setDownloading] = useState(false);
+  const [msg, setMsg] = useState('');
   const navigate = useNavigate();
 
-  // Fetch all trucks and their histories
   useEffect(() => {
-    async function fetchAll() {
-      setLoading(true);
-      const trucks = await listTrucks();
-      let allEntries = [];
-      for (const t of trucks) {
-        const res = await getTruckHistory(t.truck_number);
-        if (res.entries && res.entries.length > 0) {
-          // For each entry, add truck_number and fetch waste breakdown if needed
-          for (const entry of res.entries) {
-            allEntries.push({
-              ...entry,
-              truck_number: t.truck_number
-            });
-          }
-        }
-      }
-      setTruckEntries(allEntries);
-      setLoading(false);
-    }
-    fetchAll();
+    fetchEntries();
+    // eslint-disable-next-line
   }, []);
 
-  // Optionally, fetch waste breakdown for each entry
-  // For now, assume waste_distribution is not available directly; you may need to extend your API to provide it.
-  // Here, we'll just show total_weight and truck_number.
+  const fetchEntries = async () => {
+    setLoading(true);
+    const trucks = await listTrucks();
+    let allEntries = [];
+    for (const t of trucks) {
+      const res = await getTruckHistory(t.truck_number);
+      if (res.entries && res.entries.length > 0) {
+        for (const entry of res.entries) {
+          allEntries.push({
+            ...entry,
+            truck_number: t.truck_number
+          });
+        }
+      }
+    }
+    setTruckEntries(allEntries);
+    setLoading(false);
+  };
+
+  // Filter entries by date (YYYY-MM-DD)
+  const filteredEntries = filterDate
+    ? truckEntries.filter(e => e.timestamp && e.timestamp.startsWith(filterDate))
+    : truckEntries;
+
+  // Download as Excel for the selected date or all
+  const handleDownloadExcel = async () => {
+    setDownloading(true);
+    setMsg('');
+    // Prepare rows for Excel
+    let allRows = [];
+    for (const entry of filteredEntries) {
+      if (entry.waste_breakdown && entry.waste_breakdown.length > 0) {
+        for (const w of entry.waste_breakdown) {
+          allRows.push({
+            'Truck Number': entry.truck_number,
+            'Timestamp': entry.timestamp,
+            'Total Weight': entry.total_weight,
+            'Waste Type': w.type,
+            'Waste Weight': w.weight
+          });
+        }
+      } else {
+        allRows.push({
+          'Truck Number': entry.truck_number,
+          'Timestamp': entry.timestamp,
+          'Total Weight': entry.total_weight,
+          'Waste Type': '',
+          'Waste Weight': ''
+        });
+      }
+    }
+    if (allRows.length === 0) {
+      setMsg('No entries found for the selected date.');
+      setDownloading(false);
+      return;
+    }
+    // Create worksheet and workbook
+    const ws = XLSX.utils.json_to_sheet(allRows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Truck Entries');
+    const filename = filterDate
+      ? `truck_entries_${filterDate}.xlsx`
+      : 'truck_entries_all.xlsx';
+    XLSX.writeFile(wb, filename);
+    setMsg('Excel downloaded!');
+    setDownloading(false);
+  };
 
   return (
     <div>
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 24
+        marginBottom: 24,
+        gap: 16
       }}>
-        <h2 style={{ margin: 0 }}>Truck Entries</h2>
+        <h2 style={{ margin: 0, flex: 1 }}>Truck Entries</h2>
+        <input
+          type="date"
+          value={filterDate}
+          onChange={e => setFilterDate(e.target.value)}
+          style={{
+            fontSize: 16,
+            padding: '8px 12px',
+            borderRadius: 6,
+            border: '1px solid #bcd'
+          }}
+        />
+        <button
+          type="button"
+          onClick={handleDownloadExcel}
+          disabled={downloading}
+          style={{
+            background: '#388e3c',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 8,
+            padding: '10px 18px',
+            fontSize: 15,
+            fontWeight: 600,
+            cursor: 'pointer',
+            boxShadow: '0 2px 8px #0001'
+          }}
+        >
+          {downloading
+            ? 'Downloading...'
+            : filterDate
+              ? 'Download for Date'
+              : 'Download All as Excel'}
+        </button>
         <button
           onClick={() => navigate('/truck-entry')}
           style={{
@@ -55,12 +137,14 @@ export default function Trucks() {
             fontSize: 16,
             fontWeight: 600,
             cursor: 'pointer',
-            boxShadow: '0 2px 8px #0001'
+            boxShadow: '0 2px 8px #0001',
+            marginLeft: 16
           }}
         >
           Add Truck Entry
         </button>
       </div>
+      {msg && <div style={{ color: downloading ? '#388e3c' : '#d32f2f', marginBottom: 12 }}>{msg}</div>}
       {loading ? (
         <div>Loading...</div>
       ) : (
@@ -81,12 +165,12 @@ export default function Trucks() {
               </tr>
             </thead>
             <tbody>
-              {truckEntries.length === 0 ? (
+              {filteredEntries.length === 0 ? (
                 <tr>
                   <td colSpan={4} style={{ textAlign: 'center', padding: 24 }}>No entries found.</td>
                 </tr>
               ) : (
-                truckEntries.map((entry, idx) => (
+                filteredEntries.map((entry, idx) => (
                   <tr key={entry.id || idx}>
                     <td style={{ padding: 10, borderBottom: '1px solid #e3eaf2' }}>{entry.truck_number}</td>
                     <td style={{ padding: 10, borderBottom: '1px solid #e3eaf2' }}>{entry.total_weight} kg</td>
