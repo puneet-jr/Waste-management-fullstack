@@ -1,16 +1,46 @@
 import React, { useEffect, useState } from 'react';
-import { listWasteTypes } from './api';
+import { listWasteTypes, listTrucks, getTruckHistory } from './api';
 
 export default function WasteTypes() {
   const [wasteTypes, setWasteTypes] = useState([]);
+  const [wasteTotals, setWasteTotals] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    listWasteTypes().then(types => {
-      setWasteTypes(types);
-      setLoading(false);
-    });
+    fetchWasteTypesWithTotals();
   }, []);
+
+  const fetchWasteTypesWithTotals = async () => {
+    setLoading(true);
+    const types = await listWasteTypes();
+    setWasteTypes(types);
+
+    // Calculate totals for each waste type
+    const trucks = await listTrucks();
+    const totals = {};
+    
+    for (const type of types) {
+      totals[type.name] = 0;
+    }
+
+    for (const truck of trucks) {
+      const res = await getTruckHistory(truck.truck_number);
+      if (res.entries) {
+        for (const entry of res.entries) {
+          if (entry.waste_breakdown) {
+            for (const waste of entry.waste_breakdown) {
+              if (totals[waste.type] !== undefined) {
+                totals[waste.type] += parseFloat(waste.weight) || 0;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    setWasteTotals(totals);
+    setLoading(false);
+  };
 
   const wasteTypeColors = [
     'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -43,7 +73,7 @@ export default function WasteTypes() {
           fontSize: '18px',
           color: '#4a5568'
         }}>
-          Loading waste types...
+          Loading waste types and calculating totals...
         </div>
       ) : (
         <div style={{
@@ -85,14 +115,25 @@ export default function WasteTypes() {
                 fontSize: '20px',
                 fontWeight: '700',
                 textTransform: 'uppercase',
-                letterSpacing: '0.05em'
+                letterSpacing: '0.05em',
+                marginBottom: '8px'
               }}>
                 {wt.name}
               </div>
               <div style={{
+                fontSize: '16px',
+                fontWeight: '600',
+                marginBottom: '8px',
+                background: 'rgba(255, 255, 255, 0.2)',
+                padding: '8px 16px',
+                borderRadius: '12px',
+                backdropFilter: 'blur(10px)'
+              }}>
+                Total: {wasteTotals[wt.name] || 0} kg
+              </div>
+              <div style={{
                 fontSize: '14px',
-                opacity: 0.9,
-                marginTop: '8px'
+                opacity: 0.8
               }}>
                 Category ID: {wt.id}
               </div>

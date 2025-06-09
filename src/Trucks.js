@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { listTrucks, getTruckHistory } from './api';
+import { listTrucks, getTruckHistory, updateTruckEntry, listWasteTypes } from './api';
 import { useNavigate } from 'react-router-dom';
 import * as XLSX from 'xlsx';
 
@@ -9,10 +9,14 @@ export default function Trucks() {
   const [filterDate, setFilterDate] = useState('');
   const [downloading, setDownloading] = useState(false);
   const [msg, setMsg] = useState('');
+  const [editingEntry, setEditingEntry] = useState(null);
+  const [editForm, setEditForm] = useState({ total_weight: '', waste_distribution: [] });
+  const [wasteTypes, setWasteTypes] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchEntries();
+    listWasteTypes().then(setWasteTypes);
     // eslint-disable-next-line
   }, []);
 
@@ -33,6 +37,48 @@ export default function Trucks() {
     }
     setTruckEntries(allEntries);
     setLoading(false);
+  };
+
+  const startEdit = (entry) => {
+    setEditingEntry(entry.id);
+    setEditForm({
+      total_weight: entry.total_weight,
+      waste_distribution: entry.waste_breakdown || []
+    });
+  };
+
+  const cancelEdit = () => {
+    setEditingEntry(null);
+    setEditForm({ total_weight: '', waste_distribution: [] });
+  };
+
+  const handleWasteChange = (idx, field, value) => {
+    const copy = [...editForm.waste_distribution];
+    copy[idx] = { ...copy[idx], [field]: value };
+    setEditForm({ ...editForm, waste_distribution: copy });
+  };
+
+  const addWasteRow = () => {
+    setEditForm({
+      ...editForm,
+      waste_distribution: [...editForm.waste_distribution, { type: '', weight: '' }]
+    });
+  };
+
+  const removeWasteRow = (idx) => {
+    const copy = editForm.waste_distribution.filter((_, i) => i !== idx);
+    setEditForm({ ...editForm, waste_distribution: copy });
+  };
+
+  const saveEdit = async () => {
+    const res = await updateTruckEntry(editingEntry, editForm);
+    if (res.error) {
+      setMsg(`Error: ${res.error}`);
+    } else {
+      setMsg('Entry updated successfully');
+      fetchEntries();
+      cancelEdit();
+    }
   };
 
   // Filter entries by date (YYYY-MM-DD)
@@ -192,12 +238,20 @@ export default function Trucks() {
                   letterSpacing: '0.05em',
                   fontSize: 14
                 }}>Waste Breakdown</th>
+                <th style={{ 
+                  padding: '20px 24px', 
+                  color: 'white',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  fontSize: 14
+                }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredEntries.length === 0 ? (
                 <tr>
-                  <td colSpan={4} style={{ 
+                  <td colSpan={5} style={{ 
                     textAlign: 'center', 
                     padding: '48px 24px',
                     fontSize: 16,
@@ -220,7 +274,26 @@ export default function Trucks() {
                       borderBottom: '1px solid #f1f5f9',
                       fontSize: 15,
                       fontWeight: 500
-                    }}>{entry.total_weight} kg</td>
+                    }}>
+                      {editingEntry === entry.id ? (
+                        <input
+                          type="number"
+                          value={editForm.total_weight}
+                          onChange={e => setEditForm({...editForm, total_weight: e.target.value})}
+                          style={{ 
+                            width: '100px', // Adjusted width for total weight
+                            padding: '8px 12px', 
+                            borderRadius: '8px', 
+                            border: '1px solid #ced4da',
+                            backgroundColor: '#fff',
+                            boxSizing: 'border-box',
+                            height: '40px'
+                          }}
+                        />
+                      ) : (
+                        `${entry.total_weight} kg`
+                      )}
+                    </td>
                     <td style={{ 
                       padding: '20px 24px', 
                       borderBottom: '1px solid #f1f5f9',
@@ -238,9 +311,142 @@ export default function Trucks() {
                       fontWeight: 500,
                       lineHeight: '1.6'
                     }}>
-                      {entry.waste_breakdown && entry.waste_breakdown.length > 0
-                        ? entry.waste_breakdown.map(w => `${w.type}: ${w.weight}kg`).join(', ')
-                        : 'N/A'}
+                      {editingEntry === entry.id ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                          {editForm.waste_distribution.map((w, i) => (
+                            <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 0 /* Override default mb */ }}>
+                              <select
+                                value={w.type}
+                                onChange={e => handleWasteChange(i, 'type', e.target.value)}
+                                style={{ 
+                                  flex: 1, 
+                                  height: '40px',
+                                  padding: '0 10px',
+                                  borderRadius: '8px',
+                                  border: '1px solid #ced4da',
+                                  backgroundColor: '#fff',
+                                  boxSizing: 'border-box'
+                                }}
+                              >
+                                <option value="">Select Type</option>
+                                {wasteTypes.map(wt => <option key={wt.id} value={wt.name}>{wt.name}</option>)}
+                              </select>
+                              <input
+                                type="number"
+                                value={w.weight}
+                                onChange={e => handleWasteChange(i, 'weight', e.target.value)}
+                                style={{ 
+                                  width: '70px', 
+                                  height: '40px',
+                                  padding: '0 10px',
+                                  borderRadius: '8px',
+                                  border: '1px solid #ced4da',
+                                  backgroundColor: '#fff',
+                                  textAlign: 'center',
+                                  boxSizing: 'border-box'
+                                }}
+                                placeholder="Weight"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => removeWasteRow(i)}
+                                style={{ 
+                                  width: '40px', 
+                                  height: '40px', 
+                                  background: '#ef4444', 
+                                  color: '#fff', 
+                                  border: 'none', 
+                                  borderRadius: '8px', 
+                                  display: 'flex', 
+                                  alignItems: 'center', 
+                                  justifyContent: 'center',
+                                  fontSize: '18px',
+                                  cursor: 'pointer',
+                                  padding: 0
+                                }}
+                              >
+                                ×
+                              </button>
+                            </div>
+                          ))}
+                          <button
+                            type="button"
+                            onClick={addWasteRow}
+                            style={{ 
+                              background: '#10b981', 
+                              color: '#fff', 
+                              border: 'none', 
+                              borderRadius: '8px', 
+                              padding: '10px 16px', 
+                              fontSize: '14px',
+                              cursor: 'pointer',
+                              alignSelf: 'flex-start'
+                            }}
+                          >
+                            + Add Waste
+                          </button>
+                        </div>
+                      ) : (
+                        entry.waste_breakdown && entry.waste_breakdown.length > 0
+                          ? entry.waste_breakdown.map(w => `${w.type}: ${w.weight}kg`).join(', ')
+                          : 'N/A'
+                      )}
+                    </td>
+                    <td style={{ 
+                      padding: '20px 24px', 
+                      borderBottom: '1px solid #f1f5f9',
+                      fontSize: 15,
+                      fontWeight: 500
+                    }}>
+                      {editingEntry === entry.id ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                          <button
+                            onClick={saveEdit}
+                            style={{ 
+                              background: '#10b981', 
+                              color: '#fff', 
+                              border: 'none', 
+                              borderRadius: '8px', 
+                              padding: '10px 16px', 
+                              fontSize: '14px',
+                              cursor: 'pointer',
+                              textAlign: 'center'
+                            }}
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={cancelEdit}
+                            style={{ 
+                              background: '#6b7280', 
+                              color: '#fff', 
+                              border: 'none', 
+                              borderRadius: '8px', 
+                              padding: '10px 16px', 
+                              fontSize: '14px',
+                              cursor: 'pointer',
+                              textAlign: 'center'
+                            }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => startEdit(entry)}
+                          style={{ 
+                            background: '#3b82f6', 
+                            color: '#fff', 
+                            border: 'none', 
+                            borderRadius: '8px', // Rounded edit button
+                            padding: '10px 16px', // Consistent padding
+                            fontSize: '14px',    // Consistent font size
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Edit
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))
