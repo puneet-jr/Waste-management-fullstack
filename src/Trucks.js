@@ -153,29 +153,91 @@ export default function Trucks() {
             width: '100%',
             borderCollapse: 'collapse',
             background: '#fff',
-            borderRadius: 8,
-            boxShadow: '0 2px 8px #0001'
+            borderRadius: 16,
+            overflow: 'hidden',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
           }}>
             <thead>
-              <tr style={{ background: '#e3eaf2' }}>
-                <th style={{ padding: 12, borderBottom: '1px solid #bcd' }}>Truck Number</th>
-                <th style={{ padding: 12, borderBottom: '1px solid #bcd' }}>Total Weight</th>
-                <th style={{ padding: 12, borderBottom: '1px solid #bcd' }}>Timestamp</th>
-                <th style={{ padding: 12, borderBottom: '1px solid #bcd' }}>Waste Breakdown</th>
+              <tr style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+                <th style={{ 
+                  padding: '20px 24px', 
+                  color: 'white',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  fontSize: 14
+                }}>Truck Number</th>
+                <th style={{ 
+                  padding: '20px 24px', 
+                  color: 'white',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  fontSize: 14
+                }}>Total Weight</th>
+                <th style={{ 
+                  padding: '20px 24px', 
+                  color: 'white',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  fontSize: 14,
+                  minWidth: '180px'
+                }}>Timestamp</th>
+                <th style={{ 
+                  padding: '20px 24px', 
+                  color: 'white',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  fontSize: 14
+                }}>Waste Breakdown</th>
               </tr>
             </thead>
             <tbody>
               {filteredEntries.length === 0 ? (
                 <tr>
-                  <td colSpan={4} style={{ textAlign: 'center', padding: 24 }}>No entries found.</td>
+                  <td colSpan={4} style={{ 
+                    textAlign: 'center', 
+                    padding: '48px 24px',
+                    fontSize: 16,
+                    color: '#64748b'
+                  }}>No entries found.</td>
                 </tr>
               ) : (
                 filteredEntries.map((entry, idx) => (
-                  <tr key={entry.id || idx}>
-                    <td style={{ padding: 10, borderBottom: '1px solid #e3eaf2' }}>{entry.truck_number}</td>
-                    <td style={{ padding: 10, borderBottom: '1px solid #e3eaf2' }}>{entry.total_weight} kg</td>
-                    <td style={{ padding: 10, borderBottom: '1px solid #e3eaf2' }}>{entry.timestamp}</td>
-                    <td style={{ padding: 10, borderBottom: '1px solid #e3eaf2' }}>
+                  <tr key={entry.id || idx} style={{
+                    transition: 'background-color 0.2s ease'
+                  }}>
+                    <td style={{ 
+                      padding: '20px 24px', 
+                      borderBottom: '1px solid #f1f5f9',
+                      fontSize: 15,
+                      fontWeight: 500
+                    }}>{entry.truck_number}</td>
+                    <td style={{ 
+                      padding: '20px 24px', 
+                      borderBottom: '1px solid #f1f5f9',
+                      fontSize: 15,
+                      fontWeight: 500
+                    }}>{entry.total_weight} kg</td>
+                    <td style={{ 
+                      padding: '20px 24px', 
+                      borderBottom: '1px solid #f1f5f9',
+                      fontSize: 15,
+                      fontWeight: 500,
+                      minWidth: '180px',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      {entry.timestamp ? new Date(entry.timestamp).toLocaleString() : 'N/A'}
+                    </td>
+                    <td style={{ 
+                      padding: '20px 24px', 
+                      borderBottom: '1px solid #f1f5f9',
+                      fontSize: 15,
+                      fontWeight: 500,
+                      lineHeight: '1.6'
+                    }}>
                       {entry.waste_breakdown && entry.waste_breakdown.length > 0
                         ? entry.waste_breakdown.map(w => `${w.type}: ${w.weight}kg`).join(', ')
                         : 'N/A'}

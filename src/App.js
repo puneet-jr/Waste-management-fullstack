@@ -15,23 +15,39 @@ function SidebarLink({ to, label, disabled }) {
     <a
       href={disabled ? "#" : to}
       style={{
-        fontSize: '20px',
-        color: disabled ? '#b0b0b0' : (isActive ? '#fff' : '#3d5afe'),
+        fontSize: '16px',
+        color: disabled ? '#a0aec0' : (isActive ? '#ffffff' : '#4a5568'),
         textDecoration: 'none',
-        padding: '16px 28px',
-        borderRadius: '10px',
-        backgroundColor: isActive ? '#1a237e' : 'transparent',
-        transition: 'background 0.2s, color 0.2s',
-        fontWeight: isActive ? '700' : '500',
+        padding: '16px 24px',
+        borderRadius: '14px',
+        backgroundColor: isActive ? 'rgba(79, 70, 229, 0.9)' : 'transparent',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        fontWeight: isActive ? '700' : '600',
         pointerEvents: disabled ? 'none' : 'auto',
         cursor: disabled ? 'not-allowed' : 'pointer',
         marginBottom: 8,
         display: 'block',
-        letterSpacing: '0.5px'
+        letterSpacing: '0.025em',
+        textTransform: 'uppercase',
+        fontSize: '13px',
+        border: isActive ? '2px solid rgba(255, 255, 255, 0.2)' : '2px solid transparent',
+        backdropFilter: isActive ? 'blur(10px)' : 'none'
       }}
       tabIndex={disabled ? -1 : 0}
-      onMouseOver={e => { if (!disabled && !isActive) e.target.style.background = '#e3eaf2'; }}
-      onMouseOut={e => { if (!disabled && !isActive) e.target.style.background = 'transparent'; }}
+      onMouseOver={e => { 
+        if (!disabled && !isActive) {
+          e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+          e.target.style.transform = 'translateX(8px)';
+          e.target.style.backdropFilter = 'blur(5px)';
+        }
+      }}
+      onMouseOut={e => { 
+        if (!disabled && !isActive) {
+          e.target.style.background = 'transparent';
+          e.target.style.transform = 'translateX(0)';
+          e.target.style.backdropFilter = 'none';
+        }
+      }}
     >
       {label}
     </a>
@@ -65,102 +81,160 @@ function ProtectedRoute({ user, children }) {
 
 function AppLayout({ auth }) {
   const { user, logout } = auth;
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div style={{
       minHeight: '100vh',
-      fontFamily: 'Segoe UI, sans-serif',
-      backgroundColor: '#f4f6fb',
+      fontFamily: 'Inter, sans-serif',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       position: 'relative'
     }}>
-      {/* Navbar */}
+      {/* Mobile-responsive Navbar */}
       <nav style={{
         width: '100%',
-        background: '#1a237e',
+        background: 'rgba(255, 255, 255, 0.1)',
+        backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
         color: '#fff',
-        padding: '0 0 0 0',
-        height: 70,
+        padding: '0',
+        height: 80,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        boxShadow: '0 2px 12px #0002',
         position: 'fixed',
         top: 0,
         left: 0,
-        zIndex: 100
+        zIndex: 100,
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
       }}>
+        {/* Mobile menu button */}
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          style={{
+            display: 'none',
+            background: 'transparent',
+            border: 'none',
+            color: '#fff',
+            fontSize: '24px',
+            marginLeft: '20px',
+            cursor: 'pointer',
+            padding: '8px'
+          }}
+          className="mobile-menu-btn"
+        >
+          ☰
+        </button>
         <div style={{
           fontWeight: 800,
-          fontSize: 28,
-          letterSpacing: 2,
-          paddingLeft: 40
-        }}>
+          fontSize: 32,
+          letterSpacing: -1,
+          paddingLeft: 48,
+          background: 'linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text'
+        }}
+        className="app-title"
+        >
           Junkyard Admin
         </div>
         {user && (
           <button
             style={{
-              background: '#d32f2f',
+              background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
               color: '#fff',
               border: 'none',
-              borderRadius: 10,
-              padding: '12px 32px',
-              fontSize: 18,
+              borderRadius: 12,
+              padding: '14px 28px',
+              fontSize: 14,
               cursor: 'pointer',
               fontWeight: 700,
-              marginRight: 40,
-              boxShadow: '0 2px 8px #0001',
-              transition: 'background 0.2s'
+              marginRight: 48,
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              boxShadow: '0 4px 14px rgba(239, 68, 68, 0.39)'
             }}
             onClick={logout}
-            onMouseOver={e => e.target.style.background = '#b71c1c'}
-            onMouseOut={e => e.target.style.background = '#d32f2f'}
+            className="logout-btn"
           >
             Logout
           </button>
         )}
       </nav>
-      {/* Sidebar + Main */}
+      {/* Sidebar + Main with responsive layout */}
       <div style={{
         display: 'flex',
-        paddingTop: 70, // push content below navbar
-        minHeight: '100vh'
+        paddingTop: 80,
+        minHeight: '100vh',
+        position: 'relative'
       }}>
-        {/* Sidebar */}
+        {/* Mobile overlay */}
+        {sidebarOpen && (
+          <div
+            style={{
+              position: 'fixed',
+              top: 80,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0, 0, 0, 0.5)',
+              zIndex: 98,
+              display: 'none'
+            }}
+            className="mobile-overlay"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+        {/* Responsive Sidebar */}
         <aside style={{
-          width: '260px',
-          padding: '40px 28px 28px 28px',
-          backgroundColor: '#e3eaf2',
-          borderRight: '1px solid #c5d0dd',
+          width: '280px',
+          padding: '48px 32px 32px 32px',
+          background: 'rgba(255, 255, 255, 0.15)',
+          backdropFilter: 'blur(20px)',
+          borderRight: '1px solid rgba(255, 255, 255, 0.2)',
           display: 'flex',
           flexDirection: 'column',
-          gap: '12px',
+          gap: '16px',
           position: 'sticky',
-          top: 70,
-          height: 'calc(100vh - 70px)',
-          boxShadow: '2px 0 12px #0001'
-        }}>
-          <SidebarLink to="/trucks" label="Trucks" disabled={!user} />
-          <SidebarLink to="/truck-entry" label="Add Truck Entry" disabled={!user} />
-          <SidebarLink to="/waste-types" label="Waste Types" disabled={!user} />
-          <SidebarLink to="/profile" label="Profile" disabled={!user} />
-          <SidebarLink to="/add-user" label="Add User" disabled={!user} />
+          top: 80,
+          height: 'calc(100vh - 80px)',
+          boxShadow: 'inset -1px 0 0 rgba(255, 255, 255, 0.1)',
+          transform: sidebarOpen ? 'translateX(0)' : 'translateX(0)',
+          transition: 'transform 0.3s ease'
+        }}
+        className="sidebar"
+        >
+          <SidebarLink to="/trucks" label="Truck Management" disabled={!user} />
+          <SidebarLink to="/truck-entry" label="Add New Entry" disabled={!user} />
+          <SidebarLink to="/waste-types" label="Waste Categories" disabled={!user} />
+          <SidebarLink to="/profile" label="User Profile" disabled={!user} />
+          <SidebarLink to="/add-user" label="User Management" disabled={!user} />
         </aside>
-        {/* Main Content */}
+        {/* Main Content with responsive container */}
         <div style={{ flex: 1, position: 'relative', minHeight: '100vh' }}>
           <main style={{
-            padding: '56px 0',
-            maxWidth: '1100px',
+            padding: '48px 0',
+            maxWidth: '1200px',
             margin: '0 auto',
             minHeight: '100vh'
-          }}>
+          }}
+          className="main-content"
+          >
             <div style={{
-              backgroundColor: '#ffffff',
-              borderRadius: '16px',
-              boxShadow: '0 4px 18px rgba(0,0,0,0.07)',
-              padding: '48px 56px',
-              minHeight: 500,
-              marginTop: '30px'
-            }}>
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: '24px',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+              padding: '56px 64px',
+              minHeight: 600,
+              marginTop: '32px',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              margin: '32px 20px 20px 20px'
+            }}
+            className="content-card"
+            >
+              {/* ...existing code... */}
               <Routes>
                 <Route path="/trucks" element={
                   <ProtectedRoute user={user}><Trucks /></ProtectedRoute>
@@ -180,13 +254,74 @@ function AppLayout({ auth }) {
                 <Route path="/add-user" element={
                   <ProtectedRoute user={user}><AddUser /></ProtectedRoute>
                 } />
-                {/* Redirect any unknown route to trucks */}
                 <Route path="*" element={<Navigate to="/trucks" replace />} />
               </Routes>
             </div>
           </main>
         </div>
       </div>
+      
+      {/* Mobile-specific styles */}
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .mobile-menu-btn {
+            display: block !important;
+          }
+          
+          .app-title {
+            font-size: 24px !important;
+            padding-left: 20px !important;
+          }
+          
+          .logout-btn {
+            padding: 12px 20px !important;
+            font-size: 12px !important;
+            margin-right: 20px !important;
+          }
+          
+          .sidebar {
+            position: fixed !important;
+            top: 80px !important;
+            left: 0 !important;
+            width: 280px !important;
+            height: calc(100vh - 80px) !important;
+            z-index: 99 !important;
+            transform: ${sidebarOpen ? 'translateX(0)' : 'translateX(-100%)'} !important;
+          }
+          
+          .mobile-overlay {
+            display: block !important;
+          }
+          
+          .main-content {
+            padding: 24px 0 !important;
+            width: 100% !important;
+          }
+          
+          .content-card {
+            padding: 32px 24px !important;
+            margin: 16px 12px 12px 12px !important;
+            border-radius: 16px !important;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .app-title {
+            font-size: 20px !important;
+            padding-left: 16px !important;
+          }
+          
+          .logout-btn {
+            padding: 10px 16px !important;
+            margin-right: 16px !important;
+          }
+          
+          .content-card {
+            padding: 24px 16px !important;
+            margin: 12px 8px 8px 8px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
@@ -198,19 +333,21 @@ function AuthLayout({ auth }) {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: '#f0f4f8'
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      padding: '0 24px'
     }}>
       <div style={{
-        background: '#fff',
-        borderRadius: 12,
-        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-        padding: '40px 48px',
-        minWidth: 340
+        background: 'rgba(255, 255, 255, 0.25)',
+        backdropFilter: 'blur(20px)',
+        borderRadius: '24px',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+        padding: '56px 64px',
+        minWidth: 420,
+        border: '1px solid rgba(255, 255, 255, 0.18)'
       }}>
         <Routes>
           <Route path="/login" element={<Login auth={auth} />} />
           <Route path="/register" element={<Register auth={auth} />} />
-          {/* Redirect any unknown route to login */}
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </div>
