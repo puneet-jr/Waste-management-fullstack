@@ -23,27 +23,20 @@ export default function Login({ auth }) {
 
   return (
     <div style={{ textAlign: 'center' }}>
-      {/* Main heading */}
       <h1 style={{
-        fontSize: 42,
-        fontWeight: 800,
+        fontSize: 28,
+        fontWeight: 600,
         marginBottom: 8,
-        background: 'linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
-        letterSpacing: -1
+        color: '#1f2937'
       }}>
-        Junkyard Management System
+        Waste Management System
       </h1>
       
-      {/* Subtitle */}
       <p style={{
-        color: 'rgba(255, 255, 255, 0.8)',
-        fontSize: 16,
-        marginBottom: 40,
-        fontWeight: 500,
-        letterSpacing: '0.5px'
+        color: '#6b7280',
+        fontSize: 14,
+        marginBottom: 32,
+        fontWeight: 400
       }}>
         Professional Waste Management & Tracking Platform
       </p>
@@ -51,34 +44,34 @@ export default function Login({ auth }) {
       <form
         onSubmit={handleSubmit}
         style={{
-          width: 400,
-          minHeight: 380,
+          width: 320,
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
-          gap: 24,
+          gap: 16,
           margin: '0 auto'
         }}
       >
         <h2 style={{ 
-          fontSize: 28, 
-          color: '#1a237e', 
-          marginBottom: 12, 
-          fontWeight: 700,
+          fontSize: 20, 
+          color: '#1f2937', 
+          marginBottom: 8, 
+          fontWeight: 600,
           textAlign: 'center'
-        }}>Login</h2>
+        }}>Sign In</h2>
         
         <input
           name="email"
-          placeholder="Email"
+          type="email"
+          placeholder="Email address"
           onChange={handleChange}
           required
           style={{
-            fontSize: 18,
-            padding: '14px 16px',
-            borderRadius: 8,
-            border: '1px solid #bcd',
-            marginBottom: 8
+            fontSize: 16,
+            padding: '12px 16px',
+            borderRadius: 4,
+            border: '1px solid #d1d5db',
+            backgroundColor: '#ffffff',
+            color: '#1f2937'
           }}
         />
         <input
@@ -88,34 +81,48 @@ export default function Login({ auth }) {
           onChange={handleChange}
           required
           style={{
-            fontSize: 18,
-            padding: '14px 16px',
-            borderRadius: 8,
-            border: '1px solid #bcd',
-            marginBottom: 8
+            fontSize: 16,
+            padding: '12px 16px',
+            borderRadius: 4,
+            border: '1px solid #d1d5db',
+            backgroundColor: '#ffffff',
+            color: '#1f2937'
           }}
         />
         <button
           type="submit"
           style={{
-            background: '#1a237e',
-            color: '#fff',
+            background: '#2563eb',
+            color: '#ffffff',
             border: 'none',
-            borderRadius: 8,
-            padding: '16px 0',
-            fontSize: 20,
-            fontWeight: 600,
+            borderRadius: 4,
+            padding: '12px 0',
+            fontSize: 16,
+            fontWeight: 500,
             marginTop: 8,
             cursor: 'pointer'
           }}
+          onMouseOver={e => e.target.style.background = '#1d4ed8'}
+          onMouseOut={e => e.target.style.background = '#2563eb'}
         >
-          LOGIN
+          Sign In
         </button>
-        <div style={{ color: '#d32f2f', minHeight: 24, fontSize: 16 }}>{msg}</div>
-        <div style={{ textAlign: 'center', marginTop: 8, fontSize: 16 }}>
+        
+        {msg && (
+          <div style={{ 
+            color: msg.includes('successful') ? '#059669' : '#dc2626', 
+            fontSize: 14,
+            fontWeight: 500,
+            textAlign: 'center'
+          }}>
+            {msg}
+          </div>
+        )}
+        
+        <div style={{ textAlign: 'center', marginTop: 16, fontSize: 14, color: '#6b7280' }}>
           Don't have an account?{' '}
-          <Link to="/register" style={{ color: '#3949ab', textDecoration: 'underline', fontWeight: 500 }}>
-            Sign Up
+          <Link to="/register" style={{ color: '#2563eb', textDecoration: 'none', fontWeight: 500 }}>
+            Sign up
           </Link>
         </div>
       </form>

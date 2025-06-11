@@ -43,6 +43,14 @@ export default function TruckEntry() {
     setEntries(copy);
   };
 
+  const removeWasteRow = (entryIdx, wasteIdx) => {
+    const copy = [...entries];
+    copy[entryIdx].waste_distribution = copy[entryIdx].waste_distribution.filter((_, i) => i !== wasteIdx);
+    // Auto-calculate total_weight
+    copy[entryIdx].total_weight = recalcTotalWeight(copy[entryIdx].waste_distribution);
+    setEntries(copy);
+  };
+
   const addTruckEntryRow = () => {
     setEntries([
       ...entries,
@@ -74,278 +82,379 @@ export default function TruckEntry() {
   };
 
   return (
-    <div style={{ 
-      padding: '24px', 
-      background: '#f8fafc', 
-      minHeight: '100vh',
-      maxWidth: '1000px',
-      margin: '0 auto'
+    <div style={{
+      padding: '20px',
+      backgroundColor: '#F8FAFC',
+      minHeight: '100vh'
     }}>
-      <form onSubmit={handleSubmit}>
-        <h2 style={{ 
-          marginBottom: 32,
+      {/* Header Section */}
+      <div style={{ marginBottom: '20px' }}>
+        <h1 style={{
           fontSize: '28px',
           fontWeight: '700',
-          color: '#1e293b',
-          textAlign: 'center',
-          background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text'
+          color: '#1E293B',
+          margin: '0 0 6px 0',
+          letterSpacing: '-0.025em'
         }}>
-          Add Truck Entries
-        </h2>
-        
+          New Truck Entry
+        </h1>
+        <p style={{
+          fontSize: '14px',
+          color: '#64748B',
+          margin: 0,
+          fontWeight: '400'
+        }}>
+          Record waste collection data for truck entries
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit} style={{ maxWidth: '800px' }}>
         {entries.map((entry, idx) => (
-          <div key={idx} style={{
-            border: '2px solid #e2e8f0',
-            borderRadius: 16,
-            padding: 24,
-            marginBottom: 24,
-            background: '#fff',
-            position: 'relative',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-            transition: 'all 0.2s ease'
-          }}>
+          <div
+            key={idx}
+            style={{
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #E2E8F0',
+              borderRadius: '8px',
+              padding: '20px',
+              marginBottom: '16px',
+              position: 'relative',
+              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+            }}
+          >
+            {/* Remove Button */}
             {entries.length > 1 && (
               <button
                 type="button"
                 onClick={() => removeTruckEntryRow(idx)}
                 style={{
                   position: 'absolute',
-                  top: 12,
-                  right: 12,
-                  background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                  color: '#fff',
+                  top: '12px',
+                  right: '12px',
+                  padding: '4px 8px',
+                  backgroundColor: '#EF4444',
+                  color: '#FFFFFF',
                   border: 'none',
-                  borderRadius: 8,
-                  padding: '6px 12px',
+                  borderRadius: '4px',
+                  fontSize: '11px',
+                  fontWeight: '500',
                   cursor: 'pointer',
-                  fontSize: '12px',
-                  fontWeight: '600',
-                  boxShadow: '0 2px 6px rgba(239, 68, 68, 0.3)',
-                  transition: 'all 0.2s ease'
+                  transition: 'background-color 0.2s ease'
                 }}
-                onMouseEnter={e => {
-                  e.target.style.transform = 'translateY(-1px)';
-                  e.target.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.4)';
-                }}
-                onMouseLeave={e => {
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 2px 6px rgba(239, 68, 68, 0.3)';
-                }}
-                title="Remove this entry"
+                onMouseEnter={e => e.target.style.backgroundColor = '#DC2626'}
+                onMouseLeave={e => e.target.style.backgroundColor = '#EF4444'}
               >
-                ✕ Remove
+                Remove
               </button>
             )}
-            
-            <input
-              placeholder="Truck Number"
-              value={entry.truck_number}
-              onChange={e => handleEntryChange(idx, 'truck_number', e.target.value)}
-              required
-              style={{ 
-                marginBottom: 16, 
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: '10px',
-                border: '2px solid #e2e8f0',
+
+            {/* Entry Header */}
+            <div style={{ marginBottom: '16px' }}>
+              <h3 style={{
                 fontSize: '16px',
-                transition: 'all 0.2s ease',
-                outline: 'none'
-              }}
-              onFocus={e => {
-                e.target.style.borderColor = '#3b82f6';
-                e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
-              }}
-              onBlur={e => {
-                e.target.style.borderColor = '#e2e8f0';
-                e.target.style.boxShadow = 'none';
-              }}
-            />
-            
-            <div style={{ marginBottom: 16 }}>
-              <button
-                type="button"
-                onClick={() => addWasteRow(idx)}
+                fontWeight: '600',
+                color: '#1E293B',
+                margin: '0 0 4px 0'
+              }}>
+                Truck Entry #{idx + 1}
+              </h3>
+              <p style={{
+                fontSize: '12px',
+                color: '#64748B',
+                margin: 0
+              }}>
+                Enter truck identification and waste distribution details
+              </p>
+            </div>
+
+            {/* Truck Number Input */}
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '13px',
+                fontWeight: '500',
+                color: '#374151',
+                marginBottom: '6px'
+              }}>
+                Truck Number *
+              </label>
+              <input
+                placeholder="Enter truck number (e.g., TRK-001)"
+                value={entry.truck_number}
+                onChange={e => handleEntryChange(idx, 'truck_number', e.target.value)}
+                required
                 style={{
-                  marginBottom: 16,
-                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: 10,
-                  padding: '12px 24px',
-                  fontSize: 14,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
-                  transition: 'all 0.3s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8
+                  width: '100%',
+                  padding: '10px 12px',
+                  border: '1px solid #D1D5DB',
+                  borderRadius: '6px',
+                  fontSize: '14px',
+                  backgroundColor: '#FFFFFF',
+                  color: '#1E293B',
+                  outline: 'none',
+                  transition: 'border-color 0.2s ease'
                 }}
-                onMouseEnter={e => {
-                  e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 6px 20px rgba(16, 185, 129, 0.4)';
-                }}
-                onMouseLeave={e => {
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
-                }}
-              >
-                ➕ Add Waste Type
-              </button>
-              
-              {(entry.waste_distribution || []).map((w, i) => (
-                <div key={i} style={{ display: 'flex', gap: 12, marginBottom: 12, alignItems: 'center' }}>
-                  <select
-                    value={w.type}
-                    onChange={e => handleWasteChange(idx, i, 'type', e.target.value)}
-                    required
-                    style={{ 
-                      flex: 1,
-                      padding: '12px 16px',
-                      borderRadius: '8px',
-                      border: '2px solid #e2e8f0',
-                      fontSize: '14px',
-                      transition: 'all 0.2s ease',
-                      outline: 'none'
-                    }}
-                    onFocus={e => {
-                      e.target.style.borderColor = '#3b82f6';
-                      e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
-                    }}
-                    onBlur={e => {
-                      e.target.style.borderColor = '#e2e8f0';
-                      e.target.style.boxShadow = 'none';
+                onFocus={e => e.target.style.borderColor = '#3B82F6'}
+                onBlur={e => e.target.style.borderColor = '#D1D5DB'}
+              />
+            </div>
+
+            {/* Waste Distribution Section */}
+            <div style={{ marginBottom: '16px' }}>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px'
+              }}>
+                <label style={{
+                  fontSize: '13px',
+                  fontWeight: '500',
+                  color: '#374151'
+                }}>
+                  Waste Distribution
+                </label>
+                <button
+                  type="button"
+                  onClick={() => addWasteRow(idx)}
+                  style={{
+                    padding: '6px 12px',
+                    backgroundColor: '#059669',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.2s ease'
+                  }}
+                  onMouseEnter={e => e.target.style.backgroundColor = '#047857'}
+                  onMouseLeave={e => e.target.style.backgroundColor = '#059669'}
+                >
+                  + Add Waste Type
+                </button>
+              </div>
+
+              {/* Waste Rows */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {(entry.waste_distribution || []).map((w, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '2fr 1fr auto',
+                      gap: '8px',
+                      alignItems: 'end',
+                      padding: '12px',
+                      backgroundColor: '#F9FAFB',
+                      border: '1px solid #E5E7EB',
+                      borderRadius: '6px'
                     }}
                   >
-                    <option value="">Select Waste Type</option>
-                    {wasteTypes.map(wt => <option key={wt.id} value={wt.name}>{wt.name}</option>)}
-                  </select>
-                  <input
-                    type="number"
-                    placeholder="Weight (kg)"
-                    value={w.weight}
-                    onChange={e => handleWasteChange(idx, i, 'weight', e.target.value)}
-                    required
-                    style={{ 
-                      flex: 1,
-                      padding: '12px 16px',
-                      borderRadius: '8px',
-                      border: '2px solid #e2e8f0',
-                      fontSize: '14px',
-                      transition: 'all 0.2s ease',
-                      outline: 'none'
-                    }}
-                    onFocus={e => {
-                      e.target.style.borderColor = '#3b82f6';
-                      e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
-                    }}
-                    onBlur={e => {
-                      e.target.style.borderColor = '#e2e8f0';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                    min="0"
-                  />
-                </div>
-              ))}
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '11px',
+                        fontWeight: '500',
+                        color: '#6B7280',
+                        marginBottom: '3px'
+                      }}>
+                        Waste Type
+                      </label>
+                      <select
+                        value={w.type}
+                        onChange={e => handleWasteChange(idx, i, 'type', e.target.value)}
+                        required
+                        style={{
+                          width: '100%',
+                          padding: '6px 8px',
+                          border: '1px solid #D1D5DB',
+                          borderRadius: '4px',
+                          fontSize: '13px',
+                          backgroundColor: '#FFFFFF',
+                          color: '#374151',
+                          outline: 'none'
+                        }}
+                      >
+                        <option value="">Select waste type</option>
+                        {wasteTypes.map(wt => (
+                          <option key={wt.id} value={wt.name}>{wt.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '11px',
+                        fontWeight: '500',
+                        color: '#6B7280',
+                        marginBottom: '3px'
+                      }}>
+                        Weight (kg)
+                      </label>
+                      <input
+                        type="number"
+                        placeholder="0.0"
+                        value={w.weight}
+                        onChange={e => handleWasteChange(idx, i, 'weight', e.target.value)}
+                        required
+                        min="0"
+                        step="0.1"
+                        style={{
+                          width: '100%',
+                          padding: '6px 8px',
+                          border: '1px solid #D1D5DB',
+                          borderRadius: '4px',
+                          fontSize: '13px',
+                          backgroundColor: '#FFFFFF',
+                          color: '#374151',
+                          outline: 'none'
+                        }}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeWasteRow(idx, i)}
+                      style={{
+                        padding: '6px 8px',
+                        backgroundColor: '#EF4444',
+                        color: '#FFFFFF',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '12px',
+                        lineHeight: 1,
+                        transition: 'background-color 0.2s ease'
+                      }}
+                      onMouseEnter={e => e.target.style.backgroundColor = '#DC2626'}
+                      onMouseLeave={e => e.target.style.backgroundColor = '#EF4444'}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+
+                {(!entry.waste_distribution || entry.waste_distribution.length === 0) && (
+                  <div style={{
+                    padding: '20px',
+                    textAlign: 'center',
+                    color: '#6B7280',
+                    backgroundColor: '#F9FAFB',
+                    border: '1px dashed #D1D5DB',
+                    borderRadius: '6px'
+                  }}>
+                    <p style={{ margin: 0, fontSize: '13px' }}>
+                      No waste types added yet. Click "Add Waste Type" to get started.
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
-            
-            <input
-              placeholder="Total Weight (Auto-calculated)"
-              type="number"
-              value={entry.total_weight}
-              readOnly
-              style={{ 
-                marginBottom: 16, 
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: '8px',
-                border: '2px solid #f3f4f6',
-                background: '#f8fafc', 
-                color: '#374151',
-                fontSize: '16px',
-                fontWeight: '600'
-              }}
-            />
+
+            {/* Total Weight Display */}
+            <div style={{
+              padding: '12px',
+              backgroundColor: '#F0F9FF',
+              border: '1px solid #BAE6FD',
+              borderRadius: '6px'
+            }}>
+              <label style={{
+                display: 'block',
+                fontSize: '12px',
+                fontWeight: '500',
+                color: '#0C4A6E',
+                marginBottom: '4px'
+              }}>
+                Total Weight (Auto-calculated)
+              </label>
+              <div style={{
+                fontSize: '20px',
+                fontWeight: '700',
+                color: '#0369A1'
+              }}>
+                {entry.total_weight || 0} kg
+              </div>
+            </div>
           </div>
         ))}
-        
-        <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button 
-            type="button" 
-            onClick={addTruckEntryRow} 
+
+        {/* Action Buttons */}
+        <div style={{
+          display: 'flex',
+          gap: '12px',
+          justifyContent: 'center',
+          flexWrap: 'wrap',
+          marginTop: '20px'
+        }}>
+          <button
+            type="button"
+            onClick={addTruckEntryRow}
             style={{
-              background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 12,
-              padding: '14px 28px',
-              fontSize: 16,
-              fontWeight: 600,
+              padding: '10px 20px',
+              backgroundColor: '#FFFFFF',
+              color: '#374151',
+              border: '1px solid #D1D5DB',
+              borderRadius: '6px',
+              fontSize: '14px',
+              fontWeight: '500',
               cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)',
-              transition: 'all 0.3s ease',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8
+              transition: 'all 0.2s ease',
+              boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
             }}
             onMouseEnter={e => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 6px 20px rgba(139, 92, 246, 0.4)';
+              e.target.style.backgroundColor = '#F9FAFB';
+              e.target.style.borderColor = '#9CA3AF';
             }}
             onMouseLeave={e => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 4px 12px rgba(139, 92, 246, 0.3)';
+              e.target.style.backgroundColor = '#FFFFFF';
+              e.target.style.borderColor = '#D1D5DB';
             }}
           >
-            🚛 Add Another Truck Entry
+            + Add Another Entry
           </button>
-          
-          <button 
-            type="submit" 
+
+          <button
+            type="submit"
             style={{
-              background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-              color: '#fff',
+              padding: '10px 24px',
+              backgroundColor: '#3B82F6',
+              color: '#FFFFFF',
               border: 'none',
-              borderRadius: 12,
-              padding: '14px 32px',
-              fontSize: 18,
-              fontWeight: 700,
+              borderRadius: '6px',
+              fontSize: '14px',
+              fontWeight: '600',
               cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
-              transition: 'all 0.3s ease',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8
+              transition: 'all 0.2s ease',
+              boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
             }}
             onMouseEnter={e => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 6px 20px rgba(59, 130, 246, 0.4)';
+              e.target.style.backgroundColor = '#2563EB';
+              e.target.style.transform = 'translateY(-1px)';
+              e.target.style.boxShadow = '0 4px 8px 0 rgba(0, 0, 0, 0.12)';
             }}
             onMouseLeave={e => {
+              e.target.style.backgroundColor = '#3B82F6';
               e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+              e.target.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.05)';
             }}
           >
-            📤 Submit All Entries
+            Submit All Entries
           </button>
         </div>
-        
+
+        {/* Status Message */}
         {msg && (
-          <div style={{ 
-            marginTop: 24,
-            color: msg.includes('Error') ? '#dc2626' : '#059669', 
-            padding: '16px 20px',
-            background: msg.includes('Error') ? '#fef2f2' : '#f0fdf4',
-            border: `2px solid ${msg.includes('Error') ? '#fecaca' : '#bbf7d0'}`,
-            borderRadius: 12,
-            fontSize: 16,
-            fontWeight: 600,
-            textAlign: 'center',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+          <div style={{
+            marginTop: '16px',
+            padding: '12px',
+            borderRadius: '6px',
+            border: '1px solid',
+            borderColor: msg.includes('Error') ? '#FCA5A5' : '#86EFAC',
+            backgroundColor: msg.includes('Error') ? '#FEF2F2' : '#F0FDF4',
+            color: msg.includes('Error') ? '#DC2626' : '#059669',
+            fontSize: '13px',
+            fontWeight: '500',
+            textAlign: 'center'
           }}>
             {msg}
           </div>

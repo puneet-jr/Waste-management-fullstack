@@ -71,34 +71,53 @@ export default function WasteTypes() {
   ];
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
-      <h2 style={{
-        background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
-        fontSize: '2.5rem',
-        marginBottom: '2rem',
-        textAlign: 'center',
-        fontWeight: '700'
-      }}>
-        Waste Categories
-      </h2>
+    <div style={{ 
+      padding: '32px',
+      backgroundColor: '#F8FAFC',
+      minHeight: '100vh'
+    }}>
+      {/* Header Section */}
+      <div style={{ marginBottom: '24px' }}>
+        <h1 style={{
+          fontSize: '32px',
+          fontWeight: '700',
+          color: '#1E293B',
+          margin: '0 0 8px 0',
+          letterSpacing: '-0.025em',
+          textAlign: 'center'
+        }}>
+          Waste Categories
+        </h1>
+        <p style={{
+          fontSize: '16px',
+          color: '#64748B',
+          margin: 0,
+          fontWeight: '400',
+          textAlign: 'center'
+        }}>
+          Monitor waste type distribution and totals
+        </p>
+      </div>
 
-      {/* Controls Section */}
+      {/* Compact Controls Section */}
       <div style={{
+        backgroundColor: '#FFFFFF',
+        border: '1px solid #E2E8F0',
+        borderRadius: '8px',
+        padding: '16px 20px',
+        marginBottom: '24px',
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
-        gap: '16px',
-        marginBottom: '32px',
-        flexWrap: 'wrap'
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '12px'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <label style={{ 
             fontSize: '14px', 
             fontWeight: '600', 
-            color: '#475569',
+            color: '#374151',
             whiteSpace: 'nowrap'
           }}>
             Filter by Date:
@@ -109,121 +128,118 @@ export default function WasteTypes() {
             onChange={e => setFilterDate(e.target.value)}
             style={{
               fontSize: '14px',
-              padding: '10px 12px',
-              borderRadius: '8px',
-              border: '2px solid #e2e8f0',
-              background: '#fff',
-              color: '#1e293b',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-              transition: 'all 0.2s ease',
+              padding: '8px 12px',
+              borderRadius: '6px',
+              border: '1px solid #D1D5DB',
+              background: '#FFFFFF',
+              color: '#1E293B',
+              boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+              transition: 'border-color 0.2s ease',
               outline: 'none'
             }}
-            onFocus={e => {
-              e.target.style.borderColor = '#3b82f6';
-              e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
-            }}
-            onBlur={e => {
-              e.target.style.borderColor = '#e2e8f0';
-              e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
-            }}
+            onFocus={e => e.target.style.borderColor = '#3B82F6'}
+            onBlur={e => e.target.style.borderColor = '#D1D5DB'}
           />
         </div>
 
-        <button
-          onClick={() => setShowTotals(!showTotals)}
-          style={{
-            background: showTotals 
-              ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
-              : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '10px',
-            padding: '12px 24px',
-            fontSize: '14px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-            transition: 'all 0.3s ease',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-          onMouseEnter={e => {
-            e.target.style.transform = 'translateY(-2px)';
-            e.target.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.25)';
-          }}
-          onMouseLeave={e => {
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
-          }}
-        >
-          📊 {showTotals ? 'Hide Totals' : 'Show Totals'}
-        </button>
-
-        {filterDate && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <button
-            onClick={() => setFilterDate('')}
+            onClick={() => setShowTotals(!showTotals)}
             style={{
-              background: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
-              color: '#fff',
+              background: showTotals 
+                ? 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)'
+                : 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+              color: '#FFFFFF',
               border: 'none',
-              borderRadius: '10px',
-              padding: '12px 20px',
+              borderRadius: '6px',
+              padding: '8px 16px',
               fontSize: '14px',
               fontWeight: '600',
               cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-              transition: 'all 0.3s ease',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+              transition: 'all 0.2s ease',
               display: 'flex',
               alignItems: 'center',
               gap: '6px'
             }}
             onMouseEnter={e => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.25)';
+              e.target.style.transform = 'translateY(-1px)';
+              e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
             }}
             onMouseLeave={e => {
               e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+              e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
             }}
           >
-            🗑️ Clear Filter
+            📊 {showTotals ? 'Hide Totals' : 'Show Totals'}
           </button>
-        )}
+
+          {filterDate && (
+            <button
+              onClick={() => setFilterDate('')}
+              style={{
+                background: 'linear-gradient(135deg, #6B7280 0%, #4B5563 100%)',
+                color: '#FFFFFF',
+                border: 'none',
+                borderRadius: '6px',
+                padding: '8px 12px',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                transition: 'all 0.2s ease',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+              onMouseEnter={e => {
+                e.target.style.transform = 'translateY(-1px)';
+                e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
+              }}
+              onMouseLeave={e => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+              }}
+            >
+              ✕ Clear
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Grand Total Display */}
       {showTotals && (
         <div style={{
-          background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
-          borderRadius: '16px',
-          padding: '24px',
-          marginBottom: '32px',
-          color: '#fff',
+          backgroundColor: '#FFFFFF',
+          border: '2px solid #3B82F6',
+          borderRadius: '12px',
+          padding: '20px',
+          marginBottom: '24px',
           textAlign: 'center',
-          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
-          border: '1px solid rgba(255, 255, 255, 0.1)'
+          boxShadow: '0 4px 12px rgba(59, 130, 246, 0.15)'
         }}>
           <h3 style={{ 
-            margin: '0 0 12px 0', 
-            fontSize: '24px', 
+            margin: '0 0 8px 0', 
+            fontSize: '18px', 
             fontWeight: '700',
+            color: '#1E293B',
             textTransform: 'uppercase',
             letterSpacing: '0.05em'
           }}>
             Total Waste Collected
           </h3>
-          <div style={{ fontSize: '20px', fontWeight: '600' }}>
+          <div style={{ 
+            fontSize: '14px', 
+            fontWeight: '600',
+            color: '#64748B',
+            marginBottom: '8px'
+          }}>
             {filterDate ? `Date: ${filterDate}` : 'All Time'}
           </div>
           <div style={{ 
-            fontSize: '36px', 
-            fontWeight: '800', 
-            marginTop: '8px',
-            background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
+            fontSize: '28px', 
+            fontWeight: '800',
+            color: '#3B82F6'
           }}>
             {grandTotal.toFixed(2)} kg
           </div>
@@ -232,60 +248,68 @@ export default function WasteTypes() {
       
       {loading ? (
         <div style={{
+          backgroundColor: '#FFFFFF',
+          border: '1px solid #E2E8F0',
+          borderRadius: '12px',
+          padding: '64px',
           textAlign: 'center',
-          padding: '60px',
-          fontSize: '18px',
-          color: '#4a5568'
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
         }}>
           <div style={{ 
             width: '40px', 
             height: '40px', 
-            border: '4px solid #e2e8f0', 
-            borderTop: '4px solid #3b82f6', 
+            border: '3px solid #E2E8F0', 
+            borderTop: '3px solid #3B82F6', 
             borderRadius: '50%', 
             animation: 'spin 1s linear infinite',
-            margin: '0 auto 16px'
+            margin: '0 auto 16px auto'
           }}></div>
-          Loading waste types and calculating totals...
+          <p style={{
+            fontSize: '16px',
+            color: '#64748B',
+            margin: 0,
+            fontWeight: '600'
+          }}>
+            Loading waste types and calculating totals...
+          </p>
         </div>
       ) : (
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: '24px',
-          padding: '20px 0'
+          gap: '20px'
         }}>
           {wasteTypes.map((wt, index) => (
             <div
               key={wt.id}
               style={{
                 background: wasteTypeColors[index % wasteTypeColors.length],
-                borderRadius: '20px',
-                padding: '32px 24px',
+                borderRadius: '16px',
+                padding: '24px 20px',
                 color: '#ffffff',
                 textAlign: 'center',
-                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
+                boxShadow: '0 8px 25px rgba(0, 0, 0, 0.15)',
                 border: '1px solid rgba(255, 255, 255, 0.2)',
                 transition: 'all 0.3s ease',
                 cursor: 'pointer'
               }}
               onMouseOver={e => {
-                e.target.style.transform = 'translateY(-8px)';
-                e.target.style.boxShadow = '0 25px 50px rgba(0, 0, 0, 0.2)';
+                e.target.style.transform = 'translateY(-4px)';
+                e.target.style.boxShadow = '0 12px 35px rgba(0, 0, 0, 0.2)';
               }}
               onMouseOut={e => {
                 e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.15)';
+                e.target.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.15)';
               }}
             >
               <div style={{
-                fontSize: '48px',
-                marginBottom: '16px'
+                fontSize: '36px',
+                marginBottom: '12px'
               }}>
                 🗂️
               </div>
               <div style={{
-                fontSize: '20px',
+                fontSize: '18px',
                 fontWeight: '700',
                 textTransform: 'uppercase',
                 letterSpacing: '0.05em',
@@ -294,21 +318,21 @@ export default function WasteTypes() {
                 {wt.name}
               </div>
               <div style={{
-                fontSize: '16px',
+                fontSize: '14px',
                 fontWeight: '600',
-                marginBottom: '8px',
+                marginBottom: '6px',
                 background: 'rgba(255, 255, 255, 0.2)',
-                padding: '8px 16px',
-                borderRadius: '12px',
+                padding: '6px 12px',
+                borderRadius: '8px',
                 backdropFilter: 'blur(10px)'
               }}>
                 Total: {(wasteTotals[wt.name] || 0).toFixed(2)} kg
               </div>
               <div style={{
-                fontSize: '14px',
+                fontSize: '12px',
                 opacity: 0.8
               }}>
-                Category ID: {wt.id}
+                ID: {wt.id}
               </div>
             </div>
           ))}
@@ -317,14 +341,15 @@ export default function WasteTypes() {
       
       {!loading && wasteTypes.length === 0 && (
         <div style={{
+          backgroundColor: '#FFFFFF',
+          border: '1px solid #E2E8F0',
+          borderRadius: '12px',
+          padding: '64px',
           textAlign: 'center',
-          padding: '60px',
-          background: 'rgba(255, 255, 255, 0.9)',
-          borderRadius: '20px',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)'
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
         }}>
           <div style={{ fontSize: '48px', marginBottom: '16px' }}>📋</div>
-          <div style={{ fontSize: '18px', color: '#4a5568' }}>
+          <div style={{ fontSize: '16px', color: '#64748B', fontWeight: '600' }}>
             No waste types found
           </div>
         </div>

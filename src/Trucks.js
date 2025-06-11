@@ -193,258 +193,283 @@ export default function Trucks() {
   };
 
   return (
-    <div style={{ padding: '24px', background: '#f8fafc', minHeight: '100vh' }}>
+    <div style={{ 
+      padding: '20px',
+      backgroundColor: '#F8FAFC',
+      minHeight: '100vh'
+    }}>
+      {/* Header Section */}
       <div style={{
         display: 'flex',
-        alignItems: 'center',
-        marginBottom: 32,
-        gap: 20,
-        flexWrap: 'wrap'
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        marginBottom: '20px',
+        flexWrap: 'wrap',
+        gap: '12px'
       }}>
-        <h2 style={{ 
-          margin: 0, 
-          flex: 1, 
-          fontSize: 28, 
-          fontWeight: 700, 
-          color: '#1e293b',
-          minWidth: '200px'
-        }}>Truck Entries</h2>
-        
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <label style={{ 
-            fontSize: 14, 
-            fontWeight: 600, 
-            color: '#475569',
-            whiteSpace: 'nowrap'
+        <div>
+          <h1 style={{
+            fontSize: '28px',
+            fontWeight: '800',
+            color: '#0F172A',
+            margin: '0 0 6px 0',
+            letterSpacing: '-0.025em',
+            textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
           }}>
-            Date:
-          </label>
-          <input
-            type="date"
-            value={filterDate}
-            onChange={e => setFilterDate(e.target.value)}
-            style={{
-              fontSize: 14,
-              padding: '10px 12px',
-              borderRadius: 10,
-              border: '2px solid #e2e8f0',
-              background: '#fff',
-              color: '#1e293b',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-              transition: 'all 0.2s ease',
-              outline: 'none'
-            }}
-            onFocus={e => {
-              e.target.style.borderColor = '#3b82f6';
-              e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
-            }}
-            onBlur={e => {
-              e.target.style.borderColor = '#e2e8f0';
-              e.target.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
-            }}
-          />
-        </div>
-
-        <div style={{ position: 'relative' }}>
-          <button
-            type="button"
-            onClick={() => setShowDownloadOptions(!showDownloadOptions)}
-            disabled={downloading}
-            style={{
-              background: downloading 
-                ? 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)'
-                : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 10,
-              padding: '12px 20px',
-              fontSize: 14,
-              fontWeight: 600,
-              cursor: downloading ? 'not-allowed' : 'pointer',
-              boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              transition: 'all 0.3s ease'
-            }}
-            onMouseEnter={e => {
-              if (!downloading) {
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 6px 20px rgba(16, 185, 129, 0.4)';
-              }
-            }}
-            onMouseLeave={e => {
-              if (!downloading) {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
-              }
-            }}
-          >
-            {downloading ? (
-              <>
-                <span style={{ 
-                  width: 16, 
-                  height: 16, 
-                  border: '2px solid #fff', 
-                  borderTop: '2px solid transparent', 
-                  borderRadius: '50%', 
-                  animation: 'spin 1s linear infinite' 
-                }}></span>
-                Downloading...
-              </>
-            ) : (
-              <>
-                📥 Download
-              </>
-            )}
-          </button>
-          
-          {showDownloadOptions && (
-            <div style={{
-              position: 'absolute',
-              top: '100%',
-              right: 0,
-              marginTop: 8,
-              background: '#fff',
-              border: '1px solid #e2e8f0',
-              borderRadius: 12,
-              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
-              zIndex: 10,
-              minWidth: 200,
-              overflow: 'hidden'
-            }}>
-              <button
-                onClick={handleDownloadExcel}
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  border: 'none',
-                  background: 'transparent',
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  fontSize: 14,
-                  color: '#374151',
-                  borderBottom: '1px solid #f1f5f9',
-                  transition: 'background-color 0.2s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8
-                }}
-                onMouseEnter={e => e.target.style.background = '#f8fafc'}
-                onMouseLeave={e => e.target.style.background = 'transparent'}
-              >
-                📊 Excel Format
-              </button>
-              <button
-                onClick={handleDownloadPDF}
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  border: 'none',
-                  background: 'transparent',
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  fontSize: 14,
-                  color: '#374151',
-                  transition: 'background-color 0.2s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8
-                }}
-                onMouseEnter={e => e.target.style.background = '#f8fafc'}
-                onMouseLeave={e => e.target.style.background = 'transparent'}
-              >
-                📄 PDF Format
-              </button>
-            </div>
-          )}
+            Truck Entry Management
+          </h1>
+          <p style={{
+            fontSize: '14px',
+            color: '#475569',
+            margin: 0,
+            fontWeight: '500'
+          }}>
+            Monitor and manage all truck waste collection entries
+          </p>
         </div>
 
         <button
           onClick={() => navigate('/truck-entry')}
           style={{
-            background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-            color: '#fff',
+            padding: '8px 16px',
+            backgroundColor: '#3B82F6',
+            color: '#FFFFFF',
             border: 'none',
-            borderRadius: 10,
-            padding: '12px 20px',
-            fontSize: 14,
-            fontWeight: 600,
+            borderRadius: '6px',
+            fontSize: '13px',
+            fontWeight: '600',
             cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+            transition: 'all 0.2s ease',
+            boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.1)',
             display: 'flex',
             alignItems: 'center',
-            gap: 8,
-            transition: 'all 0.3s ease'
+            gap: '6px',
+            textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
           }}
           onMouseEnter={e => {
-            e.target.style.transform = 'translateY(-2px)';
-            e.target.style.boxShadow = '0 6px 20px rgba(59, 130, 246, 0.4)';
+            e.target.style.backgroundColor = '#2563EB';
+            e.target.style.transform = 'translateY(-1px)';
+            e.target.style.boxShadow = '0 4px 8px 0 rgba(0, 0, 0, 0.15)';
           }}
           onMouseLeave={e => {
+            e.target.style.backgroundColor = '#3B82F6';
             e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+            e.target.style.boxShadow = '0 2px 4px 0 rgba(0, 0, 0, 0.1)';
           }}
         >
-          ➕ Add Entry
+          <span>+</span> Add Entry
         </button>
       </div>
 
-      {/* Click outside to close dropdown */}
-      {showDownloadOptions && (
-        <div 
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 5
-          }}
-          onClick={() => setShowDownloadOptions(false)}
-        />
-      )}
+      {/* Filters and Actions Panel */}
+      <div style={{
+        backgroundColor: '#FFFFFF',
+        border: '1px solid #E2E8F0',
+        borderRadius: '8px',
+        padding: '16px',
+        marginBottom: '20px',
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '12px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <label style={{
+              fontSize: '13px',
+              fontWeight: '600',
+              color: '#1E293B',
+              minWidth: 'fit-content'
+            }}>
+              Filter by Date:
+            </label>
+            <input
+              type="date"
+              value={filterDate}
+              onChange={e => setFilterDate(e.target.value)}
+              style={{
+                padding: '6px 10px',
+                border: '1px solid #D1D5DB',
+                borderRadius: '6px',
+                fontSize: '13px',
+                fontWeight: '500',
+                backgroundColor: '#FFFFFF',
+                color: '#1E293B',
+                outline: 'none',
+                transition: 'border-color 0.2s ease'
+              }}
+              onFocus={e => e.target.style.borderColor = '#3B82F6'}
+              onBlur={e => e.target.style.borderColor = '#D1D5DB'}
+            />
+          </div>
 
+          <div style={{ position: 'relative' }}>
+            <button
+              type="button"
+              onClick={() => setShowDownloadOptions(!showDownloadOptions)}
+              disabled={downloading}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: downloading ? '#9CA3AF' : '#059669',
+                color: '#FFFFFF',
+                border: 'none',
+                borderRadius: '6px',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: downloading ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s ease',
+                boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+              }}
+              onMouseEnter={e => {
+                if (!downloading) {
+                  e.target.style.backgroundColor = '#047857';
+                  e.target.style.transform = 'translateY(-1px)';
+                  e.target.style.boxShadow = '0 4px 8px 0 rgba(0, 0, 0, 0.15)';
+                }
+              }}
+              onMouseLeave={e => {
+                if (!downloading) {
+                  e.target.style.backgroundColor = '#059669';
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 2px 4px 0 rgba(0, 0, 0, 0.1)';
+                }
+              }}
+            >
+              {downloading ? (
+                <>
+                  <div style={{
+                    width: '12px',
+                    height: '12px',
+                    border: '2px solid #FFFFFF',
+                    borderTop: '2px solid transparent',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }}></div>
+                  Downloading...
+                </>
+              ) : (
+                <>↓ Export Data</>
+              )}
+            </button>
+            
+            {showDownloadOptions && (
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                right: 0,
+                marginTop: '4px',
+                backgroundColor: '#FFFFFF',
+                border: '1px solid #E2E8F0',
+                borderRadius: '6px',
+                boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
+                zIndex: 10,
+                minWidth: '160px',
+                overflow: 'hidden'
+              }}>
+                <button
+                  onClick={handleDownloadExcel}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    border: 'none',
+                    backgroundColor: 'transparent',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    color: '#1E293B',
+                    borderBottom: '1px solid #F3F4F6',
+                    transition: 'background-color 0.2s ease'
+                  }}
+                  onMouseEnter={e => e.target.style.backgroundColor = '#F9FAFB'}
+                  onMouseLeave={e => e.target.style.backgroundColor = 'transparent'}
+                >
+                  📊 Excel Format
+                </button>
+                <button
+                  onClick={handleDownloadPDF}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    border: 'none',
+                    backgroundColor: 'transparent',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    color: '#1E293B',
+                    transition: 'background-color 0.2s ease'
+                  }}
+                  onMouseEnter={e => e.target.style.backgroundColor = '#F9FAFB'}
+                  onMouseLeave={e => e.target.style.backgroundColor = 'transparent'}
+                >
+                  📄 PDF Format
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Status Messages */}
       {msg && (
-        <div style={{ 
-          color: msg.includes('Error') ? '#dc2626' : '#059669', 
-          marginBottom: 20,
-          padding: '12px 16px',
-          background: msg.includes('Error') ? '#fef2f2' : '#f0fdf4',
-          border: `1px solid ${msg.includes('Error') ? '#fecaca' : '#bbf7d0'}`,
-          borderRadius: 8,
-          fontSize: 14,
-          fontWeight: 500
+        <div style={{
+          padding: '12px',
+          marginBottom: '16px',
+          borderRadius: '6px',
+          border: '1px solid',
+          borderColor: msg.includes('Error') ? '#FCA5A5' : '#86EFAC',
+          backgroundColor: msg.includes('Error') ? '#FEF2F2' : '#F0FDF4',
+          color: msg.includes('Error') ? '#DC2626' : '#059669',
+          fontSize: '13px',
+          fontWeight: '600'
         }}>
           {msg}
         </div>
       )}
 
+      {/* Main Data Table */}
       {loading ? (
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '64px 24px',
-          fontSize: 16,
-          color: '#64748b'
+        <div style={{
+          backgroundColor: '#FFFFFF',
+          border: '1px solid #E2E8F0',
+          borderRadius: '8px',
+          padding: '40px',
+          textAlign: 'center',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
         }}>
-          <div style={{ 
-            width: 40, 
-            height: 40, 
-            border: '4px solid #e2e8f0', 
-            borderTop: '4px solid #3b82f6', 
-            borderRadius: '50%', 
+          <div style={{
+            width: '32px',
+            height: '32px',
+            border: '3px solid #E2E8F0',
+            borderTop: '3px solid #3B82F6',
+            borderRadius: '50%',
             animation: 'spin 1s linear infinite',
-            margin: '0 auto 16px'
+            margin: '0 auto 12px auto'
           }}></div>
-          Loading entries...
+          <p style={{
+            fontSize: '14px',
+            color: '#64748B',
+            margin: 0,
+            fontWeight: '500'
+          }}>
+            Loading truck entries...
+          </p>
         </div>
       ) : (
-        <div style={{ 
-          background: '#fff',
-          borderRadius: 16,
+        <div style={{
+          backgroundColor: '#FFFFFF',
+          border: '1px solid #E2E8F0',
+          borderRadius: '8px',
           overflow: 'hidden',
-          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-          border: '1px solid #e2e8f0'
+          boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.1)'
         }}>
           <div style={{ overflowX: 'auto' }}>
             <table style={{
@@ -452,148 +477,157 @@ export default function Trucks() {
               borderCollapse: 'collapse'
             }}>
               <thead>
-                <tr style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-                  <th style={{ 
-                    padding: '20px 24px', 
-                    color: 'white',
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                    fontSize: 12,
-                    textAlign: 'left'
-                  }}>Truck Number</th>
-                  <th style={{ 
-                    padding: '20px 24px', 
-                    color: 'white',
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                    fontSize: 12,
-                    textAlign: 'left'
-                  }}>Total Weight</th>
-                  <th style={{ 
-                    padding: '20px 24px', 
-                    color: 'white',
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                    fontSize: 12,
-                    minWidth: '180px',
-                    textAlign: 'left'
-                  }}>Timestamp</th>
-                  <th style={{ 
-                    padding: '20px 24px', 
-                    color: 'white',
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                    fontSize: 12,
-                    textAlign: 'left'
-                  }}>Waste Breakdown</th>
-                  <th style={{ 
-                    padding: '20px 24px', 
-                    color: 'white',
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                    fontSize: 12,
-                    textAlign: 'center'
-                  }}>Actions</th>
+                <tr style={{ backgroundColor: '#F8FAFC' }}>
+                  <th style={{
+                    padding: '14px 16px',
+                    textAlign: 'left',
+                    fontSize: '13px',
+                    fontWeight: '700',
+                    color: '#0F172A',
+                    borderBottom: '1px solid #E2E8F0',
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+                  }}>
+                    Truck Number
+                  </th>
+                  <th style={{
+                    padding: '14px 16px',
+                    textAlign: 'left',
+                    fontSize: '13px',
+                    fontWeight: '700',
+                    color: '#0F172A',
+                    borderBottom: '1px solid #E2E8F0',
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+                  }}>
+                    Total Weight
+                  </th>
+                  <th style={{
+                    padding: '14px 16px',
+                    textAlign: 'left',
+                    fontSize: '13px',
+                    fontWeight: '700',
+                    color: '#0F172A',
+                    borderBottom: '1px solid #E2E8F0',
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+                  }}>
+                    Timestamp
+                  </th>
+                  <th style={{
+                    padding: '14px 16px',
+                    textAlign: 'left',
+                    fontSize: '13px',
+                    fontWeight: '700',
+                    color: '#0F172A',
+                    borderBottom: '1px solid #E2E8F0',
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+                  }}>
+                    Waste Breakdown
+                  </th>
+                  <th style={{
+                    padding: '14px 16px',
+                    textAlign: 'center',
+                    fontSize: '13px',
+                    fontWeight: '700',
+                    color: '#0F172A',
+                    borderBottom: '1px solid #E2E8F0',
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+                  }}>
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {filteredEntries.length === 0 ? (
                   <tr>
-                    <td colSpan={5} style={{ 
-                      textAlign: 'center', 
-                      padding: '64px 24px',
-                      fontSize: 16,
-                      color: '#64748b',
-                      background: '#f8fafc'
+                    <td colSpan={5} style={{
+                      padding: '40px 16px',
+                      textAlign: 'center',
+                      color: '#64748B',
+                      fontSize: '14px',
+                      fontWeight: '500'
                     }}>
-                      <div style={{ marginBottom: 12 }}>📋</div>
+                      <div style={{ marginBottom: '12px', fontSize: '32px' }}>📋</div>
                       No entries found for the selected criteria.
                     </td>
                   </tr>
                 ) : (
                   filteredEntries.map((entry, idx) => (
-                    <tr key={entry.id || idx} style={{
-                      transition: 'background-color 0.2s ease',
-                      borderBottom: '1px solid #f1f5f9'
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.backgroundColor = '#f8fafc'}
-                    onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+                    <tr
+                      key={entry.id || idx}
+                      style={{
+                        borderBottom: '1px solid #F3F4F6',
+                        transition: 'background-color 0.2s ease'
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.backgroundColor = '#F9FAFB'}
+                      onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
-                      <td style={{ 
-                        padding: '20px 24px', 
-                        fontSize: 14,
-                        fontWeight: 600,
-                        color: '#1e293b'
-                      }}>{entry.truck_number}</td>
-                      <td style={{ 
-                        padding: '20px 24px', 
-                        fontSize: 14,
-                        fontWeight: 500,
-                        color: '#374151'
+                      <td style={{
+                        padding: '12px 16px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        color: '#0F172A'
+                      }}>
+                        {entry.truck_number}
+                      </td>
+                      <td style={{
+                        padding: '12px 16px',
+                        fontSize: '14px',
+                        color: '#1E293B'
                       }}>
                         {editingEntry === entry.id ? (
                           <input
                             type="number"
                             value={editForm.total_weight}
                             onChange={e => setEditForm({...editForm, total_weight: e.target.value})}
-                            style={{ 
-                              width: '100px',
-                              padding: '8px 12px', 
-                              borderRadius: '6px', 
-                              border: '1px solid #d1d5db',
-                              backgroundColor: '#fff',
-                              fontSize: 14
+                            style={{
+                              padding: '6px 8px',
+                              border: '1px solid #D1D5DB',
+                              borderRadius: '4px',
+                              fontSize: '13px',
+                              fontWeight: '500',
+                              width: '80px'
                             }}
                           />
                         ) : (
                           <span style={{
-                            background: '#f0f9ff',
-                            color: '#0369a1',
                             padding: '4px 8px',
-                            borderRadius: 6,
-                            fontSize: 13,
-                            fontWeight: 600
+                            backgroundColor: '#DBEAFE',
+                            color: '#1D4ED8',
+                            borderRadius: '4px',
+                            fontSize: '13px',
+                            fontWeight: '600',
+                            textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
                           }}>
                             {entry.total_weight} kg
                           </span>
                         )}
                       </td>
-                      <td style={{ 
-                        padding: '20px 24px', 
-                        fontSize: 14,
-                        fontWeight: 500,
-                        color: '#6b7280',
-                        minWidth: '180px'
+                      <td style={{
+                        padding: '12px 16px',
+                        fontSize: '13px',
+                        color: '#64748B',
+                        fontWeight: '500'
                       }}>
-                        {entry.timestamp ? new Date(entry.timestamp).toLocaleString() : 'N/A'}
+                        {entry.timestamp ? new Date(entry.timestamp).toLocaleDateString() : 'N/A'}
                       </td>
-                      <td style={{ 
-                        padding: '20px 24px', 
-                        fontSize: 14,
-                        fontWeight: 500,
-                        color: '#374151',
-                        lineHeight: '1.6'
+                      <td style={{
+                        padding: '12px 16px',
+                        fontSize: '13px',
+                        color: '#1E293B'
                       }}>
                         {editingEntry === entry.id ? (
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                             {editForm.waste_distribution.map((w, i) => (
-                              <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                              <div key={i} style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
                                 <select
                                   value={w.type}
                                   onChange={e => handleWasteChange(i, 'type', e.target.value)}
-                                  style={{ 
-                                    flex: 1, 
-                                    height: '36px',
-                                    padding: '0 10px',
-                                    borderRadius: '6px',
-                                    border: '1px solid #d1d5db',
-                                    backgroundColor: '#fff',
-                                    fontSize: 13
+                                  style={{
+                                    flex: 1,
+                                    padding: '4px 6px',
+                                    border: '1px solid #D1D5DB',
+                                    borderRadius: '4px',
+                                    fontSize: '12px',
+                                    fontWeight: '500'
                                   }}
                                 >
                                   <option value="">Select Type</option>
@@ -603,33 +637,27 @@ export default function Trucks() {
                                   type="number"
                                   value={w.weight}
                                   onChange={e => handleWasteChange(i, 'weight', e.target.value)}
-                                  style={{ 
-                                    width: '70px', 
-                                    height: '36px',
-                                    padding: '0 8px',
-                                    borderRadius: '6px',
-                                    border: '1px solid #d1d5db',
-                                    backgroundColor: '#fff',
-                                    textAlign: 'center',
-                                    fontSize: 13
+                                  style={{
+                                    width: '60px',
+                                    padding: '4px 6px',
+                                    border: '1px solid #D1D5DB',
+                                    borderRadius: '4px',
+                                    fontSize: '12px',
+                                    fontWeight: '500'
                                   }}
-                                  placeholder="kg"
                                 />
                                 <button
-                                  type="button"
                                   onClick={() => removeWasteRow(i)}
-                                  style={{ 
-                                    width: '32px', 
-                                    height: '32px', 
-                                    background: '#ef4444', 
-                                    color: '#fff', 
-                                    border: 'none', 
-                                    borderRadius: '6px', 
-                                    display: 'flex', 
-                                    alignItems: 'center', 
-                                    justifyContent: 'center',
-                                    fontSize: '14px',
-                                    cursor: 'pointer'
+                                  style={{
+                                    width: '24px',
+                                    height: '24px',
+                                    backgroundColor: '#EF4444',
+                                    color: '#FFFFFF',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer',
+                                    fontSize: '12px',
+                                    fontWeight: '600'
                                   }}
                                 >
                                   ×
@@ -637,124 +665,99 @@ export default function Trucks() {
                               </div>
                             ))}
                             <button
-                              type="button"
                               onClick={addWasteRow}
-                              style={{ 
-                                background: '#10b981', 
-                                color: '#fff', 
-                                border: 'none', 
-                                borderRadius: '6px', 
-                                padding: '8px 12px', 
-                                fontSize: '12px',
-                                cursor: 'pointer',
-                                alignSelf: 'flex-start'
+                              style={{
+                                padding: '4px 8px',
+                                backgroundColor: '#059669',
+                                color: '#FFFFFF',
+                                border: 'none',
+                                borderRadius: '4px',
+                                fontSize: '11px',
+                                fontWeight: '600',
+                                cursor: 'pointer'
                               }}
                             >
-                              + Add Waste
+                              + Add
                             </button>
                           </div>
                         ) : (
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
                             {entry.waste_breakdown && entry.waste_breakdown.length > 0
                               ? entry.waste_breakdown.map((w, i) => (
-                                  <span key={i} style={{
-                                    background: '#f3f4f6',
-                                    color: '#374151',
-                                    padding: '4px 8px',
-                                    borderRadius: 4,
-                                    fontSize: 12,
-                                    fontWeight: 500,
-                                    border: '1px solid #e5e7eb'
-                                  }}>
+                                  <span
+                                    key={i}
+                                    style={{
+                                      padding: '2px 6px',
+                                      backgroundColor: '#F3F4F6',
+                                      color: '#1E293B',
+                                      borderRadius: '3px',
+                                      fontSize: '11px',
+                                      fontWeight: '500',
+                                      border: '1px solid #E5E7EB'
+                                    }}
+                                  >
                                     {w.type}: {w.weight}kg
                                   </span>
                                 ))
-                              : <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>No breakdown</span>}
+                              : <span style={{ color: '#9CA3AF', fontSize: '12px', fontWeight: '400', fontStyle: 'italic' }}>No breakdown</span>}
                           </div>
                         )}
                       </td>
-                      <td style={{ 
-                        padding: '20px 24px', 
+                      <td style={{
+                        padding: '12px 16px',
                         textAlign: 'center'
                       }}>
                         {editingEntry === entry.id ? (
-                          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                          <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
                             <button
                               onClick={saveEdit}
-                              style={{ 
-                                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', 
-                                color: '#fff', 
-                                border: 'none', 
-                                borderRadius: '8px', 
-                                padding: '8px 16px', 
-                                fontSize: '12px',
+                              style={{
+                                padding: '4px 8px',
+                                backgroundColor: '#059669',
+                                color: '#FFFFFF',
+                                border: 'none',
+                                borderRadius: '4px',
+                                fontSize: '11px',
                                 cursor: 'pointer',
-                                fontWeight: 600,
-                                boxShadow: '0 2px 6px rgba(16, 185, 129, 0.3)',
-                                transition: 'all 0.2s ease'
-                              }}
-                              onMouseEnter={e => {
-                                e.target.style.transform = 'translateY(-1px)';
-                                e.target.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.4)';
-                              }}
-                              onMouseLeave={e => {
-                                e.target.style.transform = 'translateY(0)';
-                                e.target.style.boxShadow = '0 2px 6px rgba(16, 185, 129, 0.3)';
+                                fontWeight: '600'
                               }}
                             >
-                              ✓ 
+                              Save
                             </button>
                             <button
                               onClick={cancelEdit}
-                              style={{ 
-                                background: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)', 
-                                color: '#fff', 
-                                border: 'none', 
-                                borderRadius: '8px', 
-                                padding: '8px 16px', 
-                                fontSize: '12px',
+                              style={{
+                                padding: '4px 8px',
+                                backgroundColor: '#6B7280',
+                                color: '#FFFFFF',
+                                border: 'none',
+                                borderRadius: '4px',
+                                fontSize: '11px',
                                 cursor: 'pointer',
-                                fontWeight: 600,
-                                boxShadow: '0 2px 6px rgba(107, 114, 128, 0.3)',
-                                transition: 'all 0.2s ease'
-                              }}
-                              onMouseEnter={e => {
-                                e.target.style.transform = 'translateY(-1px)';
-                                e.target.style.boxShadow = '0 4px 12px rgba(107, 114, 128, 0.4)';
-                              }}
-                              onMouseLeave={e => {
-                                e.target.style.transform = 'translateY(0)';
-                                e.target.style.boxShadow = '0 2px 6px rgba(107, 114, 128, 0.3)';
+                                fontWeight: '600'
                               }}
                             >
-                              ✕ 
+                              Cancel
                             </button>
                           </div>
                         ) : (
                           <button
                             onClick={() => startEdit(entry)}
-                            style={{ 
-                              background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)', 
-                              color: '#fff', 
-                              border: 'none', 
-                              borderRadius: '8px',
-                              padding: '8px 16px',
-                              fontSize: '12px',
+                            style={{
+                              padding: '4px 8px',
+                              backgroundColor: '#3B82F6',
+                              color: '#FFFFFF',
+                              border: 'none',
+                              borderRadius: '4px',
+                              fontSize: '11px',
                               cursor: 'pointer',
-                              fontWeight: 600,
-                              boxShadow: '0 2px 6px rgba(59, 130, 246, 0.3)',
-                              transition: 'all 0.2s ease'
+                              fontWeight: '600',
+                              transition: 'background-color 0.2s ease'
                             }}
-                            onMouseEnter={e => {
-                              e.target.style.transform = 'translateY(-1px)';
-                              e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
-                            }}
-                            onMouseLeave={e => {
-                              e.target.style.transform = 'translateY(0)';
-                              e.target.style.boxShadow = '0 2px 6px rgba(59, 130, 246, 0.3)';
-                            }}
+                            onMouseEnter={e => e.target.style.backgroundColor = '#2563EB'}
+                            onMouseLeave={e => e.target.style.backgroundColor = '#3B82F6'}
                           >
-                            ✏️ Edit
+                            Edit
                           </button>
                         )}
                       </td>
@@ -765,6 +768,21 @@ export default function Trucks() {
             </table>
           </div>
         </div>
+      )}
+
+      {/* Click outside to close dropdown */}
+      {showDownloadOptions && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 5
+          }}
+          onClick={() => setShowDownloadOptions(false)}
+        />
       )}
 
       <style jsx>{`
